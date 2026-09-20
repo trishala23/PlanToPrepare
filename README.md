@@ -15,19 +15,38 @@ Resume parsing, skill-gap analysis, and question selection are all rule-based
 ## Stack
 
 - Next.js 14 (App Router) + TypeScript + Tailwind CSS
-- Prisma + SQLite for persistence
+- Prisma + PostgreSQL for persistence
 - NextAuth (credentials provider) for accounts
 
 ## Getting started
 
+Requires a PostgreSQL database (local or hosted — e.g. a free instance on
+Neon, Supabase, or Vercel Postgres).
+
 ```bash
 npm install
-cp .env.example .env   # then set a real NEXTAUTH_SECRET
-npx prisma migrate dev
+cp .env.example .env   # then set DATABASE_URL and a real NEXTAUTH_SECRET
+npx prisma migrate deploy
 npm run dev
 ```
 
 Open http://localhost:3000.
+
+## Deploying to Vercel
+
+1. Create a Postgres database (Vercel's Storage tab → Postgres, or an
+   external provider like Neon/Supabase) and copy its connection string.
+2. In the Vercel dashboard, "Add New" → "Project" → import this GitHub repo.
+3. Before the first deploy, set these Environment Variables (Production and
+   Preview):
+   - `DATABASE_URL` — the Postgres connection string from step 1
+   - `NEXTAUTH_SECRET` — a random secret (e.g. `openssl rand -hex 32`)
+   - `NEXTAUTH_URL` — your deployed URL, e.g. `https://your-project.vercel.app`
+     (you'll need to add/update this after the first deploy once you know the
+     assigned domain, then redeploy)
+4. Deploy. The build command (`prisma generate && prisma migrate deploy &&
+   next build`) applies pending database migrations automatically on every
+   deploy, so no manual migration step is needed after the first setup.
 
 ## Project layout
 
