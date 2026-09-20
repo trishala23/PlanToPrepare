@@ -21,7 +21,9 @@ export function detectSkills(text: string): string[] {
   for (const [skill, aliases] of Object.entries(SKILL_KEYWORDS)) {
     for (const alias of aliases) {
       // Aliases may already contain regex escapes (e.g. "c\\+\\+"); use as-is.
-      const pattern = new RegExp(`(?<![a-z0-9])${alias}(?![a-z0-9])`, "i");
+      // Allow an optional trailing "s" so simple plurals (e.g. "REST APIs",
+      // "pivot tables") still match a singular alias.
+      const pattern = new RegExp(`(?<![a-z0-9])${alias}s?(?![a-z0-9])`, "i");
       if (pattern.test(lower)) {
         found.add(skill);
         break;
